@@ -9,14 +9,10 @@
     </header>
 
     <div class="content">
-      <el-row
-        style="height: 280px"
-        type="flex"
-        justify="center"
-      >
+      <el-row style="height: 280px" type="flex" justify="center">
         <el-col :span="20" id="first">
           <br />
-          <h1 style="font-size: 50px">Hello,{{ welcome }},...</h1>
+          <h2 style="font-size: 50px">Knapsack Computer</h2>
           <p>
             This is a template for a simple marketing or informational website.
             It includes a large callout called a jumbotron and three supporting
@@ -29,7 +25,79 @@
       </el-row>
 
       <el-row type="flex" justify="center">
-        <el-col :span="20" id="second">
+        <el-col :span="20" class="second">
+          <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form-item label="背包大小：">
+              <el-input-number
+                v-model="size"
+                @change="handleChange"
+                :min="1"
+                :max="100"
+              ></el-input-number>
+            </el-form-item>
+
+            <el-form-item label="物品体积：" style="margin-left: 20px">
+              <el-input-number
+                v-model="formInline.itemsize"
+                @change="handleChange"
+                :min="1"
+                :max="100"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item label="物品价值：">
+              <el-input-number
+                v-model="formInline.itemvalue"
+                @change="handleChange"
+                :min="1"
+                :max="100"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">添加</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="center">
+        <el-col :span="20" class="second">
+          <el-table :data="tableData" style="width: 100%" height="500">
+            <el-table-column
+              fixed
+              prop="item"
+              label="背包大小"
+              width="180"
+              align="center"
+            >
+              <template slot-scope="scope">
+                  <span>体积={{ scope.row.item.size }} 价值={{
+                      scope.row.item.value}}</span>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    circle
+                    size="mini"
+                    style="margin-left: 10px"
+                  ></el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="dpvalue"
+              v-for="(item, index) in parseInt(size) + 1"
+              :key="index"
+              :label="(item - 1)+''"
+            >
+              <template slot-scope="scope">
+                <span>{{ scope.row.dpvalue[index] }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex" justify="center">
+        <el-col :span="20" class="second">
           <el-card shadow="never" v-for="heading in headings" :key="heading">
             <h2>{{ heading }}</h2>
             <p>
@@ -55,37 +123,39 @@
 export default {
   data() {
     return {
-      headings: [
-        "1Heading",
-        "2Heading",
-        "3Heading",
-        "4Heading",
-        "5Heading",
-        "6Heading",
-      ],
+      headings: ["1Heading", "2Heading", "3Heading", "4Heading"],
       welcome: "Vue.js,Element-UI",
       pj_name: "Visualize Knapsack",
+      tableData: [
+        {
+          item: {
+            value: 4,
+            size: 4,
+          },
+          dpvalue: [1, 2, 3, 4, 5, 6],
+        },
+        {
+          item: {
+            value: 5,
+            size: 3,
+          },
+          dpvalue: [2, 2, 3, 4, 5, 6],
+        },
+      ],
+      size: 20,
+      formInline: {
+        bagsize: "",
+        itemsize: "",
+        itemvalue: "",
+      },
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert(
-            "Name:" +
-              this.nameValidateForm.name +
-              ";Password:" +
-              this.nameValidateForm.password
-          );
-          // console.log(this.nameValidateForm.name);
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    handleChange(value) {
+      console.log(value);
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    onSubmit() {
+        console.log('submit!');
     },
   },
 };
@@ -128,8 +198,8 @@ export default {
   margin-top: 50px;
   background: rgb(245, 245, 245);
 }
-.header{
-  box-shadow: 0 5px 20px rgba(0,0,0,.05), 0 6px 6px rgba(0,0,0,.05);
+.header {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.05);
   position: fixed;
   z-index: 10;
   left: 0;
@@ -138,20 +208,19 @@ export default {
   margin-left: 8px;
   margin-right: 8px;
 }
-#first{
+#first {
   background: rgb(255, 255, 255);
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
-#second{
+.second {
   background: rgb(255, 255, 255);
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
-#copyright{
+#copyright {
   background: rgb(255, 255, 255);
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
-
 </style>
