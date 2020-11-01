@@ -9,18 +9,26 @@
     </header>
 
     <div class="content">
-      <el-row style="height: 280px" type="flex" justify="center">
+      <el-row  type="flex" justify="center">
         <el-col :span="20" id="first">
           <br />
-          <h2 style="font-size: 50px">Knapsack Computer</h2>
-          <p>
-            This is a template for a simple marketing or informational website.
-            It includes a large callout called a jumbotron and three supporting
-            pieces of content. Use it as a starting point to create something
-            more unique.
-          </p>
-          <el-button type="primary">Learn more >></el-button>
-          <br />
+          <h1 >背包问题</h1>
+        </el-col>
+      </el-row>
+      <el-row  type="flex" justify="center">
+        <el-col :span="20" class="second">
+          <div class="intro">
+            <p>
+            背包问题(Knapsack problem)是一种组合优化的NP完全问题。问题可以描述为：
+            <br />
+            给定一组物品，每种物品都有自己的重量和价格，在限定的总重量内，我们如何选择，才能使得物品的总价格最高。
+            </p>
+            <el-button size="small" >
+              <el-link href="https://baike.baidu.com/item/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/2416931?fr=aladdin" target="_blank">
+                View details >>
+              </el-link>
+            </el-button>
+          </div>
         </el-col>
       </el-row>
 
@@ -53,6 +61,7 @@
             <el-form-item>
               <el-button type="primary" @click="addItem">添加</el-button>
             </el-form-item>
+            <el-button type="danger" style="margin-left:40px" @click="deleteAll">清空物品</el-button>
           </el-form>
         </el-col>
       </el-row>
@@ -78,6 +87,8 @@
                   icon="el-icon-delete"
                   circle
                   size="mini"
+                  @click="handleDelete(scope.$index)"
+                  :style="{display: scope.row.item.value == 0?'none':'inline'}"
                   style="margin-left: 10px"
                 ></el-button>
               </template>
@@ -99,22 +110,9 @@
       </el-row>
 
       <el-row type="flex" justify="center">
-        <el-col :span="20" class="second">
-          <el-card shadow="never" v-for="heading in headings" :key="heading">
-            <h2>{{ heading }}</h2>
-            <p>
-              Donec id elit non mi porta gravida at eget metus. Fusce dapibus,
-              tellus ac cursus commodo, tortor mauris condimentum nibh.
-            </p>
-            <el-button size="small">View details >></el-button>
-          </el-card>
-        </el-col>
-      </el-row>
-
-      <el-row type="flex" justify="center">
         <el-col :span="20" id="copyright">
           <el-divider></el-divider>
-          <p>© 2020 Company, Inc.</p>
+          <p>© 2020 yyds, Inc.</p>
         </el-col>
       </el-row>
     </div>
@@ -126,8 +124,6 @@ var size=101;
 export default {
   data() {
     return {
-      headings: ["1Heading", "2Heading", "3Heading", "4Heading"],
-      welcome: "Vue.js,Element-UI",
       pj_name: "Visualize Knapsack",
       item_size: 1,
       item_value: 1,
@@ -143,13 +139,6 @@ export default {
         },
         // {
         //   item: {
-        //     value: 4,
-        //     size: 4,
-        //   },
-        //   dpvalue: [1, 2, 3, 4, 5, 6],
-        // },
-        // {
-        //   item: {
         //     value: 5,
         //     size: 3,
         //   },
@@ -159,14 +148,29 @@ export default {
     };
   },
   methods: {
+    // 改变背包大小
     handleChange() {
       this.$nextTick(() => {
         this.$refs.table.doLayout();
       });
       this.$options.methods.calculateDp(this);
     },
-    onSubmit() {
-      console.log("submit!");
+    //删除全部元素
+    deleteAll() {
+      this.tableData = [
+        {
+          item: {
+            value: 0,
+            size: 0,
+          },
+          dpvalue: new Int16Array(size),
+        },
+      ];
+    },
+    // 删除物品
+    handleDelete(index) {
+      this.tableData.splice(index, 1);
+      this.$options.methods.calculateDp(this);
     },
     // 动态规划
     calculateDp(self) {
@@ -257,7 +261,7 @@ export default {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
 .content {
-  margin-top: 50px;
+  margin-top: 4em;
   background: rgb(245, 245, 245);
 }
 .header {
@@ -279,6 +283,12 @@ export default {
   background: rgb(255, 255, 255);
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
+}
+.intro{
+  background: rgb(255, 255, 255);
+  margin-left: 12em;
+  margin-right: 12em;
+  margin-bottom: 1em;
 }
 #copyright {
   background: rgb(255, 255, 255);
