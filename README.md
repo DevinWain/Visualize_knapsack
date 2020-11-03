@@ -1,4 +1,7 @@
-# knapsack
+# Knapsack Problem | 背包问题
+
+这是一个背包问题的计算网页，本地访问可以clone到本地再打开dist文件夹中的index.html，或者按下面npm中的配置来启动服务。
+在线版可以访问：https://devinwain.github.io/Visualize_knapsack/dist/
 
 ## Project setup
 ```
