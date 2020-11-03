@@ -32,9 +32,9 @@
         </el-col>
       </el-row>
 
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" >
         <el-col :span="20" class="second">
-          <el-form :inline="true" class="demo-form-inline">
+          <el-form :inline="true" class="demo-form-inline" style="margin-top: 10px"> 
             <el-form-item label="背包大小：">
               <el-input-number
                 v-model="size"
@@ -63,12 +63,17 @@
             </el-form-item>
             <el-button type="danger" style="margin-left:40px" @click="deleteAll">清空物品</el-button>
           </el-form>
+          <div style="margin-bottom:10px">
+            选中的物品：
+            <el-radio v-model="radio" :label=false>不显示</el-radio>
+            <el-radio v-model="radio" :label=true>显示</el-radio>
+          </div>
         </el-col>
       </el-row>
 
       <el-row type="flex" justify="center">
         <el-col :span="20" class="second">
-          <el-table :data="tableData" style="width: 100%" height="500" ref="table">
+          <el-table :data="tableData" style="width: 100%" height="500" ref="table" :row-class-name="tableRowClassName">
             <el-table-column
               fixed
               prop="msg"
@@ -129,6 +134,8 @@ export default {
       item_value: 1,
       size: 10,
       dp: [],
+      selected: [],
+      radio: true,
       tableData: [
         {
           item: {
@@ -157,6 +164,7 @@ export default {
     },
     //删除全部元素
     deleteAll() {
+      this.dp = [];
       this.tableData = [
         {
           item: {
@@ -205,24 +213,53 @@ export default {
           }
         }
       }
+      self.dp.splice(1, 1);
+      self.$options.methods.backTrack(self);
       for (let i = 1; i <= self.tableData.length; i++) {
-            self.tableData[i].dpvalue = self.dp[i+1]
+            self.tableData[i].dpvalue = self.dp[i]
       }
     },
     addItem() {
-          //赋值部分
-          let tempObj = {
-            item: {
-              value: this.item_value,
-              size: this.item_size,
-            },
-            dpvalue: new Int16Array(this.size+1),
-          };
-          this.tableData.push(tempObj);
-          this.item_size = null;
-          this.item_value = null;
-          this.$options.methods.calculateDp(this);
+      //赋值部分
+      let tempObj = {
+        item: {
+          value: this.item_value,
+          size: this.item_size,
         },
+        dpvalue: new Int16Array(this.size+1),
+      };
+      this.tableData.push(tempObj);
+      this.item_size = null;
+      this.item_value = null;
+      this.$options.methods.calculateDp(this);
+    },
+    backTrack(that){
+      let j = that.size;
+      that.selected = [];
+      if (that.tableData.length < 2) {
+        return '';
+      }
+      console.log(that.dp);
+      for (let i = that.tableData.length-1; i > 0; i--) {
+        if(that.dp[i][j] != that.dp[i-1][j]){           
+          j = j-that.tableData[i].item.size;
+          that.selected.push(i);
+        } 
+      }
+    },
+    tableRowClassName({rowIndex}) {
+      if(this.radio){
+        if(this.selected.indexOf(rowIndex) > -1) {
+          return 'success-row';
+        } 
+        else {
+          return '';
+        }
+      }
+      else{
+        return '';
+      }
+    }
   },
 };
 </script>
@@ -294,5 +331,12 @@ export default {
   background: rgb(255, 255, 255);
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
+}
+.el-table .warning-row {
+    background: oldlace;
+  }
+
+.el-table .success-row {
+  background: #f0f9eb;
 }
 </style>
