@@ -11,7 +11,6 @@
     <div class="content">
       <el-row  type="flex" justify="center">
         <el-col :span="20" id="first">
-          <br />
           <h1 >背包问题</h1>
         </el-col>
       </el-row>
@@ -74,6 +73,7 @@
       <el-row type="flex" justify="center">
         <el-col :span="20" class="second">
           <el-table :data="tableData" style="width: 100%" height="500" ref="table" :row-class-name="tableRowClassName">
+
             <el-table-column
               fixed
               prop="msg"
@@ -114,6 +114,43 @@
         </el-col>
       </el-row>
 
+
+      <el-row type="flex" justify="center">
+        <el-col :span="20" class="second">
+          <el-row type="flex" justify="center">
+            <el-col :span="18" class="third">
+              <!-- 背包大小 -->
+              <el-card class="box-card">
+                <div slot="header" class="clearfix" style="display: inline-block">
+                    <i class="el-icon-suitcase"></i>
+                    <span style="margin-left: 10px; font-weight: 700">背包大小</span>
+                </div>
+                {{this.size}}
+                <br>
+                <p style="text-align: left">已使用：</p> 
+                <el-progress :percentage="80" :color="customColorMethod"></el-progress>
+              </el-card>
+              <!-- 物品价值 -->
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <i class="el-icon-goods"></i>
+                  <span style="margin-left: 10px; font-weight: 700">物品总价最大值</span>
+                </div>
+                  {{this.dp[this.dp.length-1].slice(-1)[0]}}
+              </el-card>
+              <!-- 选中的物品 -->
+              <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                  <i class="el-icon-shopping-cart-full"></i>
+                  <span style="margin-left: 10px; font-weight: 700">选中的物品编号</span>
+                </div>
+                  <span v-for="o in this.selected" :key="o">{{o+' '}}</span> 
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+
       <el-row type="flex" justify="center">
         <el-col :span="20" id="copyright">
           <el-divider></el-divider>
@@ -133,9 +170,9 @@ export default {
       item_size: 1,
       item_value: 1,
       size: 10,
-      dp: [],
+      dp: [[0]],
       selected: [],
-      radio: true,
+      radio: false,
       tableData: [
         {
           item: {
@@ -164,7 +201,7 @@ export default {
     },
     //删除全部元素
     deleteAll() {
-      this.dp = [];
+      this.dp = [[0]];
       this.tableData = [
         {
           item: {
@@ -239,11 +276,10 @@ export default {
       if (that.tableData.length < 2) {
         return '';
       }
-      console.log(that.dp);
       for (let i = that.tableData.length-1; i > 0; i--) {
         if(that.dp[i][j] != that.dp[i-1][j]){           
           j = j-that.tableData[i].item.size;
-          that.selected.push(i);
+          that.selected.unshift(i);
         } 
       }
     },
@@ -259,7 +295,16 @@ export default {
       else{
         return '';
       }
-    }
+    },
+    customColorMethod(percentage) {
+        if (percentage < 30) {
+          return '#909399';
+        } else if (percentage < 70) {
+          return '#e6a23c';
+        } else {
+          return '#67c23a';
+        }
+      },
   },
 };
 </script>
@@ -298,12 +343,10 @@ export default {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
 .content {
-  margin-top: 4em;
   background: rgb(245, 245, 245);
 }
 .header {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.05);
-  position: fixed;
   z-index: 10;
   left: 0;
   right: 0;
@@ -321,10 +364,15 @@ export default {
   z-index: 5;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.1);
 }
+.second {
+  background: rgb(255, 255, 255);
+  z-index: 5;
+}
 .intro{
   background: rgb(255, 255, 255);
-  margin-left: 12em;
-  margin-right: 12em;
+  text-align: center;
+  margin:0 auto;
+  width: 80%;
   margin-bottom: 1em;
 }
 #copyright {
