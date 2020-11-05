@@ -127,8 +127,8 @@
                 </div>
                 {{this.size}}
                 <br>
-                <p style="text-align: left">已使用：</p> 
-                <el-progress :percentage="80" :color="customColorMethod"></el-progress>
+                <p style="text-align: left">已使用：{{this.bag_usage}}</p> 
+                <el-progress :percentage="Math.floor(this.bag_usage*100/this.size)" :color="customColorMethod"></el-progress>
               </el-card>
               <!-- 物品价值 -->
               <el-card class="box-card">
@@ -136,7 +136,10 @@
                   <i class="el-icon-goods"></i>
                   <span style="margin-left: 10px; font-weight: 700">物品总价最大值</span>
                 </div>
-                  {{this.dp[this.dp.length-1].slice(-1)[0]}}
+                  {{this.value_usage}}
+                  <br>
+                  <p style="text-align: left">价值占比：{{this.value_usage+'/'+this.total_value}}</p> 
+                  <el-progress :percentage="this.tableData.length===1?0:Math.floor(this.value_usage*100/this.total_value)" :color="customColorMethod"></el-progress>
               </el-card>
               <!-- 选中的物品 -->
               <el-card class="box-card">
@@ -144,7 +147,10 @@
                   <i class="el-icon-shopping-cart-full"></i>
                   <span style="margin-left: 10px; font-weight: 700">选中的物品编号</span>
                 </div>
-                  <span v-for="o in this.selected" :key="o">{{o+' '}}</span> 
+                  <span v-for="o in this.selected" :key="o">{{o+' '}}</span>
+                  <br>
+                  <p style="text-align: left">选中数量占比：{{this.selected.length+'/'+(this.tableData.length-1)}}</p> 
+                  <el-progress :percentage="this.tableData.length===1?0:Math.floor(this.selected.length*100/(this.tableData.length-1))" :color="customColorMethod"></el-progress> 
               </el-card>
             </el-col>
           </el-row>
@@ -170,6 +176,9 @@ export default {
       item_size: 1,
       item_value: 1,
       size: 10,
+      bag_usage: 0,
+      value_usage: 0,
+      total_value: 0,
       dp: [[0]],
       selected: [],
       radio: false,
@@ -201,6 +210,10 @@ export default {
     },
     //删除全部元素
     deleteAll() {
+      this.bag_usage = 0;
+      this.value_usage = 0;
+      this.total_value = 0;
+      this.selected = [];
       this.dp = [[0]];
       this.tableData = [
         {
@@ -252,6 +265,7 @@ export default {
       }
       self.dp.splice(1, 1);
       self.$options.methods.backTrack(self);
+      self.$options.methods.countUsage(self);
       for (let i = 1; i <= self.tableData.length; i++) {
             self.tableData[i].dpvalue = self.dp[i]
       }
@@ -282,6 +296,21 @@ export default {
           that.selected.unshift(i);
         } 
       }
+    },
+    countUsage(that){
+      let size_sum = 0;
+      let value_sum = 0;
+      let item_value = 0;
+      for (const e of that.tableData) {
+        item_value = item_value + e.item.value
+      }
+      for (const item of that.selected) {        
+          size_sum = size_sum + that.tableData[item].item.size;
+          value_sum = value_sum + that.tableData[item].item.value;
+      }
+      that.bag_usage = size_sum;
+      that.value_usage = value_sum;
+      that.total_value = item_value;
     },
     tableRowClassName({rowIndex}) {
       if(this.radio){
