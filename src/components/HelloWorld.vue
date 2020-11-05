@@ -82,11 +82,14 @@
               align="center"
             >
               <template slot-scope="scope">
-                <span
-                  >体积={{scope.row.item.size}}  价值={{
+                <span v-if="scope.$index===0">
+                  无物品
+                </span>
+                <span v-if="scope.$index>0">
+                  {{scope.$index}}. 体积={{scope.row.item.size}}  价值={{
                     scope.row.item.value
-                  }}</span
-                >
+                  }}
+                </span>
                 <el-button
                   type="danger"
                   icon="el-icon-delete"
@@ -96,6 +99,7 @@
                   :style="{display: scope.row.item.value == 0?'none':'inline'}"
                   style="margin-left: 10px"
                 ></el-button>
+                
               </template>
             </el-table-column>
             <el-table-column
@@ -118,7 +122,7 @@
       <el-row type="flex" justify="center">
         <el-col :span="20" class="second">
           <el-row type="flex" justify="center">
-            <el-col :span="18" class="third">
+            <el-col :span="20" class="third">
               <!-- 背包大小 -->
               <el-card class="box-card">
                 <div slot="header" class="clearfix" style="display: inline-block">
@@ -127,7 +131,9 @@
                 </div>
                 {{this.size}}
                 <br>
-                <p style="text-align: left">已使用：{{this.bag_usage}}</p> 
+                <el-tooltip content="已选择的物品体积占背包体积的比例" placement="bottom" effect="light">
+                  <p style="text-align: left">体积占比：{{this.bag_usage+'/'+this.size}}</p> 
+                </el-tooltip>
                 <el-progress :percentage="Math.floor(this.bag_usage*100/this.size)" :color="customColorMethod"></el-progress>
               </el-card>
               <!-- 物品价值 -->
@@ -138,7 +144,9 @@
                 </div>
                   {{this.value_usage}}
                   <br>
-                  <p style="text-align: left">价值占比：{{this.value_usage+'/'+this.total_value}}</p> 
+                  <el-tooltip content="已选择的物品价值占物品总价值的比例" placement="bottom" effect="light">
+                  <p style="text-align: left">价值占比：{{this.value_usage+'/'+this.total_value}}</p>
+                  </el-tooltip> 
                   <el-progress :percentage="this.tableData.length===1?0:Math.floor(this.value_usage*100/this.total_value)" :color="customColorMethod"></el-progress>
               </el-card>
               <!-- 选中的物品 -->
@@ -149,7 +157,9 @@
                 </div>
                   <span v-for="o in this.selected" :key="o">{{o+' '}}</span>
                   <br>
-                  <p style="text-align: left">选中数量占比：{{this.selected.length+'/'+(this.tableData.length-1)}}</p> 
+                  <el-tooltip content="已选择的物品数量占物品总数量的比例" placement="bottom" effect="light">
+                  <p style="text-align: left">选中数量占比：{{this.selected.length+'/'+(this.tableData.length-1)}}</p>
+                  </el-tooltip>  
                   <el-progress :percentage="this.tableData.length===1?0:Math.floor(this.selected.length*100/(this.tableData.length-1))" :color="customColorMethod"></el-progress> 
               </el-card>
             </el-col>
@@ -160,7 +170,7 @@
       <el-row type="flex" justify="center">
         <el-col :span="20" id="copyright">
           <el-divider></el-divider>
-          <p>© 2020 yyds, Inc.</p>
+          <p>© 2020 An amazing year, Inc.</p>
         </el-col>
       </el-row>
     </div>
