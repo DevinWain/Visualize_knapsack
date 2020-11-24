@@ -11,14 +11,14 @@
     <div class="content">
       <el-row  type="flex" justify="center">
         <el-col :span="20" id="first">
-          <h1 >背包问题</h1>
+          <h1 >0-1背包问题</h1>
         </el-col>
       </el-row>
       <el-row  type="flex" justify="center">
         <el-col :span="20" class="second">
           <div class="intro">
             <p>
-            背包问题(Knapsack problem)是一种组合优化的NP完全问题。问题可以描述为：
+            0-1背包问题(Knapsack problem)是一种组合优化的NP完全问题。问题可以描述为：
             <br />
             给定一组物品，每种物品都有自己的重量和价格，在限定的总重量内，我们如何选择，才能使得物品的总价格最高。
             </p>
