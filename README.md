@@ -25,3 +25,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Reference
+灵感：https://github.com/Misakasister/Online_0-1_Knapsack
+背包溯源：https://www.bilibili.com/video/BV1K4411X766?from=search&seid=2767017172442266725
